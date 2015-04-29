@@ -1,0 +1,2 @@
+# ourMiniGame
+game with liing
