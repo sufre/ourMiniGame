@@ -1,2 +1,2 @@
 # ourMiniGame
-game with liing
+game with liting
