@@ -9,44 +9,60 @@ function LogicMap:ctor(x, y, borderLen)
     self.b = borderLen
 
     self.map = {}
+    for i = 1, self.x do
+        self.map[i] = {}
+    end
+
     self.vmap = {}
     for i = 1, self.x -1 do
-        self.map[i] = {}
         self.vmap[i] = {}
-        for j = 1, self.y - 1 do
-            self.vmap[i][j] = nil
-        end
-    end
-    self.map[self.x] = {}
-    self.map[self.x][self.y] = nil
-
-
-    local virtualGridWidth = 1.5 * self.b
-    local virtualGridHeight = 1.732 * self.b
-    local startPoint = cc.p(self.b, 0.5 * 1.732 * self.b)
-    for j = 1, self.y -1 do
-        for i = 1, self.x - 1 do
-            self.vmap[i][j] = VirtualGrid.new(i, j, 
-                startPoint.x, startPoint.y,
-                virtualGridWidth, virtualGridHeight)
-            startPoint = cc.pAdd(startPoint, cc.p(virtualGridWidth, 0))
-        end
-        startPoint = cc.pAdd(startPoint, cc.p(0, virtualGridHeight))
     end
 
-    local point = cc.p(0, 0)
-    for i = 1, self.x do
-        for j = 1, self.y do
+    local firstOddGrid = cc.p(math.ceil(self.b), 
+        math.ceil(0.5 * 1.732 * self.b))
+    local firstEvenGrid = cc.p(math.ceil(2.5 * self.b), 
+        math.ceil(1.732 * self.b))
+
+    if isDebug then
+        print_r(firstOddGrid)
+        print_r(firstEvenGrid)
+    end
+    
+    local xOffset = math.floor(3 * self.b)
+    local yOffset = math.floor(1.732 * self.b)
+
+    if isDebug then
+        print("xOffset: "..xOffset)
+        print("yOffset: "..yOffset)
+    end
+
+    for j = 1, y do
+        for i = 1, x do
+            local pBaseGrid = nil
             if i % 2 == 0 then
-                point = cc.p(self.b + (i - 1) * virtualGridWidth, 
-                    1.732 * self.b + (j - 1) * virtualGridHeight)
+                pBaseGrid = firstEvenGrid
             else
-                point = cc.p(self.b + (i - 1) * virtualGridWidth, 
-                    0.5 * 1.732 * self.b + (j - 1) * virtualGridHeight)
+                pBaseGrid = firstOddGrid
             end
-            self.map[i][j] = RealGrid.new(i, j, point.x, point.y, self.b)
+            pBaseGrid = cc.pAdd(pBaseGrid, 
+                cc.p((math.ceil(i / 2) - 1) * xOffset, 
+                    (j - 1) * yOffset))
+            self.map[i][j] = RealGrid.new(i, j, pBaseGrid.x, pBaseGrid.y, self.b)
         end
     end
+
+    -- local virtualGridWidth = 1.5 * self.b
+    -- local virtualGridHeight = 1.732 * self.b
+    -- local startPoint = cc.p(self.b, 0.5 * 1.732 * self.b)
+    -- for j = 1, self.y -1 do
+    --     for i = 1, self.x - 1 do
+    --         self.vmap[i][j] = VirtualGrid.new(i, j, 
+    --             startPoint.x, startPoint.y,
+    --             virtualGridWidth, virtualGridHeight)
+    --         startPoint = cc.pAdd(startPoint, cc.p(virtualGridWidth, 0))
+    --     end
+    --     startPoint = cc.pAdd(startPoint, cc.p(0, virtualGridHeight))
+    -- end
 end
 
 function LogicMap:getRealGrid(x, y)

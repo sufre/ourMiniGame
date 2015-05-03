@@ -1,4 +1,3 @@
-
 local MainScene = class("MainScene", function()
     return display.newScene("MainScene")
 end)
@@ -26,7 +25,9 @@ function MainScene:ctor()
             local realGird = map:getRealGrid(i, j)
             local grid = display.newSprite("grid.png")
             grid:setPosition(realGird.sx, realGird.sy)
-            print("grid: " .. i .. "," .. j .. ":" .. grid:getPositionX() .. "," .. grid:getPositionY())
+            if isDebug then
+                print("grid: " .. i .. "," .. j .. ":" .. grid:getPositionX() .. "," .. grid:getPositionY())
+            end
             grid:addTo(self)
         end
     end
