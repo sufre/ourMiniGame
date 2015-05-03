@@ -3,6 +3,8 @@ require("config")
 require("cocos.init")
 require("framework.init")
 
+import(".debug.myDebug")
+
 --test
 print("sufre test start --------------------------------------------------")
 import(".map.LogicMap")
